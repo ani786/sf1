@@ -1,0 +1,6 @@
+salesforce:
+  api:
+    client-id: your-consumer-key
+    client-secret: your-consumer-secret
+    username: your-salesforce-username
+    password: your-salesforce-password-with-security-token
