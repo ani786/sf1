@@ -1,6 +1,39 @@
-salesforce:
-  api:
-    client-id: your-consumer-key
-    client-secret: your-consumer-secret
-    username: your-salesforce-username
-    password: your-salesforce-password-with-security-token
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          salesforce:
+            client-id: 3MVG9wt4IL4O5wvIEcrCt_Jm3I62OyvspPT_PhyNqQQJHer90A5f4yB8qdkv502Ztvaa5gThRjG9UwY3ZsH0t
+            client-secret: 85D243D6D8B0BE4881BD8D32096350B83AD238AEF8883EBE99BD6745CC9963E4
+            scope:
+              - api
+              - refresh_token
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/salesforce
+            api-version: 57
+            instance-url: https://lrs-dev-ed.develop.my.salesforce.com
+            client-name: Salesforce
+            client-authentication-method: basic
+            jwk-set-uri: ''
+            user-info-uri: ''
+            user-name-attribute: ''
+        provider:
+          salesforce:
+            authorization-uri: https://login.salesforce.com/services/oauth2/authorize
+            token-uri: https://login.salesforce.com/services/oauth2/token
+            user-info-uri: https://login.salesforce.com/services/oauth2/userinfo
+            user-name-attribute: name
+
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+server:
+  port: 8080
+
+
+
