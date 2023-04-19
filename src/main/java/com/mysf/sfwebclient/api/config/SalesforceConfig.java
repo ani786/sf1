@@ -3,8 +3,6 @@ package com.mysf.sfwebclient.api.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -33,6 +31,9 @@ public class SalesforceConfig {
     @Value("${spring.security.oauth2.client.registration.salesforce.client-secret}")
     private String clientSecret;
 
+    @Value("${spring.security.oauth2.client.registration.salesforce.scope}")
+    private String scope;
+
     @Value("${spring.security.oauth2.client.registration.salesforce.api-version}")
     private String apiVersion;
 
@@ -55,8 +56,22 @@ public class SalesforceConfig {
         resource.setClientId(clientId);
         resource.setClientSecret(clientSecret);
         resource.setGrantType("client_credentials");
-        resource.setScope(Arrays.asList("full"));
+        resource.setScope(Arrays.asList(scope));
         return resource;
+    }
+
+    @Bean
+    public ReactiveClientRegistrationRepository clientRegistrationRepository() {
+        return new InMemoryReactiveClientRegistrationRepository(
+                ClientRegistration.withRegistrationId("salesforce")
+                        .clientId(clientId)
+                        .clientSecret(clientSecret)
+                        .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                        .tokenUri(instanceUrl + "/services/oauth2/token")
+                        .redirectUri(redirectUri)
+                        .authorizationUri(authorizeUri)
+                        .build()
+        );
     }
 
     @Bean
@@ -72,19 +87,7 @@ public class SalesforceConfig {
 
 
 
-    @Bean
-    public ReactiveClientRegistrationRepository clientRegistrationRepository() {
-        return new InMemoryReactiveClientRegistrationRepository(
-                ClientRegistration.withRegistrationId("salesforce")
-                        .clientId(clientId)
-                        .clientSecret(clientSecret)
-                        .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                        .tokenUri(instanceUrl + "/services/oauth2/token")
-                        .redirectUri(redirectUri)
-                        .authorizationUri(authorizeUri)
-                        .build()
-        );
-    }
+
 
     @Bean
     public WebClient salesforceWebClient(
