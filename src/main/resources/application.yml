@@ -4,15 +4,16 @@ spring:
       client:
         registration:
           salesforce:
+            username: anigho7867@gmail.com.dev
             client-id: 3MVG9wt4IL4O5wvIEcrCt_Jm3I62OyvspPT_PhyNqQQJHer90A5f4yB8qdkv502Ztvaa5gThRjG9UwY3ZsH0t
             client-secret: 85D243D6D8B0BE4881BD8D32096350B83AD238AEF8883EBE99BD6745CC9963E4
             scope: api refresh_token
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/oauth2/callback
+            redirect-uri: https://login.salesforce.com/
             api-version: 57.0
             instance-url: https://lrs-dev-ed.develop.my.salesforce.com
             client-name: Salesforce
-            client-authentication-method: basic
+            client-authentication-method: client_secret_basic
             jwk-set-uri: ''
             user-info-uri: ''
             user-name-attribute: ''
@@ -27,8 +28,8 @@ spring:
 logging:
   level:
     org:
-      springframework:
-        security: DEBUG
+      springframework: DEBUG
+
 
 server:
   port: 8080

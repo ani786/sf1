@@ -3,6 +3,8 @@ package com.mysf.sfwebclient.api.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProviderBuilder;
@@ -16,13 +18,16 @@ import org.springframework.security.oauth2.client.web.server.WebSessionServerOAu
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Configuration
 public class SalesforceConfig {
+
+    @Value("${spring.security.oauth2.client.registration.salesforce.username}")
+    private String username;
 
     @Value("${spring.security.oauth2.client.registration.salesforce.client-id}")
     private String clientId;
@@ -30,7 +35,7 @@ public class SalesforceConfig {
     @Value("${spring.security.oauth2.client.registration.salesforce.client-secret}")
     private String clientSecret;
 
-    List<String> scope = Arrays.asList("api", "refresh_token");
+    List<String> scope = Arrays.asList("api", "refresh_token", "offline_access");
 
 
     @Value("${spring.security.oauth2.client.registration.salesforce.api-version}")
@@ -113,7 +118,13 @@ public class SalesforceConfig {
                 .baseUrl(instanceUrl + "/services/data/v" + apiVersion)
                 .filter(oauth2)
                 .exchangeStrategies(exchangeStrategies)
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + authorizedClientManager.authorize(
+                        OAuth2AuthorizeRequest.withClientRegistrationId("salesforce")
+                                .principal(username)
+                                .build())
+                        .flatMap(client -> Mono.just(client.getAccessToken().getTokenValue())))
                 .build();
     }
+
 }
 
