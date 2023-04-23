@@ -26,8 +26,6 @@ import java.util.List;
 @Configuration
 public class SalesforceConfig {
 
-    @Value("${spring.security.oauth2.client.registration.salesforce.username}")
-    private String username;
 
     @Value("${spring.security.oauth2.client.registration.salesforce.client-id}")
     private String clientId;
@@ -46,6 +44,9 @@ public class SalesforceConfig {
 
     @Value("${spring.security.oauth2.client.registration.salesforce.redirect-uri}")
     private String redirectUri;
+
+    @Value("${spring.security.oauth2.client.provider.salesforce.username}")
+    private String username;
 
     @Value("${spring.security.oauth2.client.provider.salesforce.authorization-uri}")
     private String authorizeUri;
